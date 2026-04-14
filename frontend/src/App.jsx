@@ -6,6 +6,11 @@ import AppointmentPage from "./pages/AppointmentPage";
 import CreateAppointmentPage from "./pages/CreateAppointmentPage";
 import ConsultationPage from "./pages/ConsultationPage";
 
+// 👇 OPTIONAL (only if you created them)
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import { AuthProvider } from "./context/AuthContext";
+
 function App() {
   return (
     <Router>
