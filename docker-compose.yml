@@ -1,5 +1,20 @@
 services:
 
+# -------------------------
+# AUTH SERVICE
+# -------------------------
+  auth-service:
+    build: ./services/auth-service
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./services/auth-service/.env
+
+  auth-db:
+    image: mongo
+    container_name: auth-db
+    ports:
+      - "27021:27017"
   # -------------------------
   # PATIENT SERVICE
   # -------------------------
@@ -95,3 +110,19 @@ services:
       - "4006:4006"
     env_file:
       - ./services/notification-service/.env
+
+
+
+# -------------------------
+# FRONTEND (FIXED - IMPORTANT)
+# -------------------------
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - auth-service
+      - appointment-service
+    environment:
+      - HOST=0.0.0.0
+      - PORT=5173
