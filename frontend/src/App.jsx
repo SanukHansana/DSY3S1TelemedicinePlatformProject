@@ -57,20 +57,12 @@ function App() {
 
                   <Route
                     path="/doctor/dashboard"
-                    element={
-                      <ProtectedRoute role="doctor">
-                        <DoctorDashboard />
-                      </ProtectedRoute>
-                    }
+                    element={<DoctorDashboard />}
                   />
 
                   <Route
                     path="/patient/dashboard"
-                    element={
-                      <ProtectedRoute role="patient">
-                        <PatientDashboard />
-                      </ProtectedRoute>
-                    }
+                    element={<PatientDashboard />}
                   />
                 </Routes>
               </AppShell>
