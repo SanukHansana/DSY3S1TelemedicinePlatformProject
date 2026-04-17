@@ -1,6 +1,6 @@
 import { apiRequest, downloadFile } from "./apiClient";
 
-const API = "http://localhost:4001/api/patients";
+const API = "/api/patients";
 
 export const getMyPatientProfile = (token) =>
   apiRequest(`${API}/me`, { token });
