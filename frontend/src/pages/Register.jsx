@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { registerUser } from "../services/authService";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
+import Navbar from "../components/Navbar";
+import { registerUser } from "../services/authService";
 import "./register.css";
 
 export default function Register() {
@@ -92,84 +94,78 @@ export default function Register() {
   };
 
   return (
-    <div className="register-page">
-      <div className="register-container">
-        <form onSubmit={handleSubmit} className="register-card">
-          <h2 className="register-title">Create Account</h2>
+    <>
+      <Navbar />
 
-          <input
-            className="register-input"
-            placeholder="Name"
-            value={form.name}
-            onChange={(e) =>
-              setForm({ ...form, name: e.target.value })
-            }
-          />
+      <div className="register-page">
+        <div className="register-container">
+          <form onSubmit={handleSubmit} className="register-card">
+            <h2 className="register-title">Create Account</h2>
 
-          <input
-            className="register-input"
-            placeholder="Email"
-            value={form.email}
-            onChange={(e) =>
-              setForm({ ...form, email: e.target.value })
-            }
-          />
-
-          <div className="password-wrapper">
             <input
               className="register-input"
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              value={form.password}
-              onChange={(e) =>
-                setForm({ ...form, password: e.target.value })
-              }
+              placeholder="Name"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
 
+            <input
+              className="register-input"
+              placeholder="Email"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+            />
+
+            <div className="password-wrapper">
+              <input
+                className="register-input"
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+              />
+
+              <button
+                type="button"
+                className="toggle-password"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+
+            <div className="role-group">
+              <label>
+                <input
+                  type="radio"
+                  value="patient"
+                  checked={form.role === "patient"}
+                  onChange={(e) => setForm({ ...form, role: e.target.value })}
+                />
+                Patient
+              </label>
+
+              <label>
+                <input
+                  type="radio"
+                  value="doctor"
+                  checked={form.role === "doctor"}
+                  onChange={(e) => setForm({ ...form, role: e.target.value })}
+                />
+                Doctor
+              </label>
+            </div>
+
             <button
-              type="button"
-              className="toggle-password"
-              onClick={() => setShowPassword(!showPassword)}
+              type="submit"
+              className="register-button"
+              disabled={loading}
             >
-              {showPassword ? "Hide" : "Show"}
+              {loading ? "Creating account..." : "Register"}
             </button>
-          </div>
-
-          <div className="role-group">
-            <label>
-              <input
-                type="radio"
-                value="patient"
-                checked={form.role === "patient"}
-                onChange={(e) =>
-                  setForm({ ...form, role: e.target.value })
-                }
-              />
-              Patient
-            </label>
-
-            <label>
-              <input
-                type="radio"
-                value="doctor"
-                checked={form.role === "doctor"}
-                onChange={(e) =>
-                  setForm({ ...form, role: e.target.value })
-                }
-              />
-              Doctor
-            </label>
-          </div>
-
-          <button
-            type="submit"
-            className="register-button"
-            disabled={loading}
-          >
-            {loading ? "Creating account..." : "Register"}
-          </button>
-        </form>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

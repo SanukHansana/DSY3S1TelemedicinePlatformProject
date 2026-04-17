@@ -36,6 +36,7 @@ const patientTabs = [
 ];
 
 const PATIENT_PROFILE_PREFILL_KEY = "patient_profile_prefill";
+const PATIENT_PROFILE_CACHE_KEY = "patient_profile_cache";
 const LAST_LOGIN_EMAIL_KEY = "last_login_email";
 
 const emptyProfile = {
@@ -100,47 +101,50 @@ const saveDownload = ({ blob, fileName }) => {
   window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
 
+const readStoredJson = (key) => {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
+  } catch (error) {
+    return null;
+  }
+};
+
 const getPatientProfilePrefill = () => {
   const lastLoginEmail = String(
     localStorage.getItem(LAST_LOGIN_EMAIL_KEY) || ""
   ).trim();
+  const cachedProfile = readStoredJson(PATIENT_PROFILE_CACHE_KEY);
+  const cachedBasics =
+    cachedProfile?.role === "patient"
+      ? {
+          full_name: String(cachedProfile.full_name || "").trim(),
+          email: String(cachedProfile.email || "").trim()
+        }
+      : {
+          full_name: "",
+          email: ""
+        };
+  const parsed = readStoredJson(PATIENT_PROFILE_PREFILL_KEY);
 
-  try {
-    const raw = localStorage.getItem(PATIENT_PROFILE_PREFILL_KEY);
-
-    if (!raw) {
-      return {
-        full_name: "",
-        email: lastLoginEmail
-      };
-    }
-
-    const parsed = JSON.parse(raw);
-
-    if (parsed?.role !== "patient") {
-      return {
-        full_name: "",
-        email: lastLoginEmail
-      };
-    }
-
-    if (lastLoginEmail && parsed.email && parsed.email !== lastLoginEmail) {
-      return {
-        full_name: "",
-        email: lastLoginEmail
-      };
-    }
-
+  if (!parsed || parsed.role !== "patient") {
     return {
-      full_name: parsed.name || "",
-      email: parsed.email || lastLoginEmail
-    };
-  } catch (error) {
-    return {
-      full_name: "",
-      email: lastLoginEmail
+      full_name: cachedBasics.full_name,
+      email: cachedBasics.email || lastLoginEmail
     };
   }
+
+  if (lastLoginEmail && parsed.email && parsed.email !== lastLoginEmail) {
+    return {
+      full_name: cachedBasics.full_name,
+      email: cachedBasics.email || lastLoginEmail
+    };
+  }
+
+  return {
+    full_name: cachedBasics.full_name || parsed.name || "",
+    email: cachedBasics.email || parsed.email || lastLoginEmail
+  };
 };
 
 const persistPatientProfilePrefill = (profileData = {}) => {
@@ -159,6 +163,32 @@ const persistPatientProfilePrefill = (profileData = {}) => {
       email: nextEmail
     })
   );
+};
+
+const persistPatientProfileCache = (profileData = {}) => {
+  localStorage.setItem(
+    PATIENT_PROFILE_CACHE_KEY,
+    JSON.stringify({
+      role: "patient",
+      full_name: String(profileData.full_name || "").trim(),
+      email: String(profileData.email || "").trim(),
+      date_of_birth: profileData.date_of_birth || "",
+      gender: profileData.gender || "",
+      phone: profileData.phone || "",
+      address: profileData.address || "",
+      emergency_contact: profileData.emergency_contact || "",
+      blood_group: profileData.blood_group || "",
+      allergies: profileData.allergies || "",
+      chronic_conditions: profileData.chronic_conditions || ""
+    })
+  );
+};
+
+const hasMissingProfileBasics = (profileData = {}) => {
+  const fullName = String(profileData.full_name || "").trim();
+  const email = String(profileData.email || "").trim();
+
+  return !fullName || !email;
 };
 
 const mapProfileToForm = (profileData = {}) => {
@@ -237,8 +267,46 @@ export default function PatientDashboard() {
       if (profileResult.status === "fulfilled") {
         const nextProfile = mapProfileToForm(profileResult.value);
         setProfile(nextProfile);
+        persistPatientProfileCache(nextProfile);
         persistPatientProfilePrefill(nextProfile);
+
+        if (hasMissingProfileBasics(profileResult.value)) {
+          const fallback = getPatientProfilePrefill();
+          const profileBasicsPatch = {};
+
+          if (
+            !String(profileResult.value?.full_name || "").trim() &&
+            fallback.full_name
+          ) {
+            profileBasicsPatch.full_name = fallback.full_name;
+          }
+
+          if (
+            !String(profileResult.value?.email || "").trim() &&
+            fallback.email
+          ) {
+            profileBasicsPatch.email = fallback.email;
+          }
+
+          if (Object.keys(profileBasicsPatch).length > 0) {
+            try {
+              const seededProfile = await updateMyPatientProfile(
+                token,
+                profileBasicsPatch
+              );
+              const seededForm = mapProfileToForm(seededProfile);
+              setProfile(seededForm);
+              persistPatientProfileCache(seededForm);
+              persistPatientProfilePrefill(seededForm);
+            } catch (seedError) {
+              // Keep the dashboard usable even if the background profile sync fails.
+            }
+          }
+        }
       } else {
+        const fallbackProfile = mapProfileToForm({});
+        setProfile(fallbackProfile);
+        persistPatientProfileCache(fallbackProfile);
         nextErrors.push(
           profileResult.reason?.message || "Could not load patient profile"
         );
@@ -348,6 +416,7 @@ export default function PatientDashboard() {
 
       const nextProfile = mapProfileToForm(savedProfile);
       setProfile(nextProfile);
+      persistPatientProfileCache(nextProfile);
       persistPatientProfilePrefill(nextProfile);
       setMessage("Profile saved.");
     } catch (saveError) {

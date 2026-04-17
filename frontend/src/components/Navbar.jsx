@@ -41,26 +41,91 @@ export default function Navbar() {
         </button>
 
         <div className={`navbar-links${menuOpen ? " navbar-links--open" : ""}`}>
-          {!token && (
-            <Link to="/login" className={`nav-link${isActive("/login") ? " nav-link--active" : ""}`}>Login</Link>
-          )}
-          {!token && (
-            <Link to="/register" className={`nav-link${isActive("/register") ? " nav-link--active" : ""}`}>Register</Link>
-          )}
-          <Link to="/" className={`nav-link${isActive("/") ? " nav-link--active" : ""}`}>Appointments</Link>
-          <Link to="/appointments/new" className={`nav-link${isActive("/appointments/new") ? " nav-link--active" : ""}`}>Book</Link>
-          <Link to="/patient/dashboard" className={`nav-link${isActive("/patient/dashboard") ? " nav-link--active" : ""}`}>Patient</Link>
-          <Link to="/doctor/dashboard" className={`nav-link${isActive("/doctor/dashboard") ? " nav-link--active" : ""}`}>Doctor</Link>
-          <Link to="/payment" className={`nav-link${isActive("/payment") ? " nav-link--active" : ""}`}>Payment</Link>
-          <Link to="/payment/status" className={`nav-link${isActive("/payment/status") ? " nav-link--active" : ""}`}>Pay Status</Link>
-          {currentRole === "admin" && token && (
-            <Link to="/admin" className={`nav-link${isActive("/admin") ? " nav-link--active" : ""}`}>Admin</Link>
-          )}
-          {token && (
-            <button className="nav-link nav-logout" onClick={logout} type="button">
-              Logout
-            </button>
-          )}
+          <div className="navbar-main-links">
+            <Link
+              to="/"
+              className={`nav-link${isActive("/") ? " nav-link--active" : ""}`}
+            >
+              Appointments
+            </Link>
+            <Link
+              to="/appointments/new"
+              className={`nav-link${
+                isActive("/appointments/new") ? " nav-link--active" : ""
+              }`}
+            >
+              Book
+            </Link>
+            <Link
+              to="/payment"
+              className={`nav-link${
+                isActive("/payment") ? " nav-link--active" : ""
+              }`}
+            >
+              Payment
+            </Link>
+            <Link
+              to="/payment/status"
+              className={`nav-link${
+                isActive("/payment/status") ? " nav-link--active" : ""
+              }`}
+            >
+              Pay Status
+            </Link>
+            {token && currentRole === "patient" ? (
+              <Link
+                to="/patient/dashboard"
+                className={`nav-link${
+                  isActive("/patient/dashboard") ? " nav-link--active" : ""
+                }`}
+              >
+                Patient
+              </Link>
+            ) : null}
+            {token && currentRole === "doctor" ? (
+              <Link
+                to="/doctor/dashboard"
+                className={`nav-link${
+                  isActive("/doctor/dashboard") ? " nav-link--active" : ""
+                }`}
+              >
+                Doctor
+              </Link>
+            ) : null}
+            {token && currentRole === "admin" ? (
+              <Link
+                to="/admin"
+                className={`nav-link${isActive("/admin") ? " nav-link--active" : ""}`}
+              >
+                Admin
+              </Link>
+            ) : null}
+          </div>
+
+          <div className="navbar-auth-links">
+            {!token ? (
+              <>
+                <Link
+                  to="/login"
+                  className={`nav-link${isActive("/login") ? " nav-link--active" : ""}`}
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className={`nav-link${
+                    isActive("/register") ? " nav-link--active" : ""
+                  }`}
+                >
+                  Register
+                </Link>
+              </>
+            ) : (
+              <button className="nav-link nav-logout" onClick={logout} type="button">
+                Logout
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </nav>

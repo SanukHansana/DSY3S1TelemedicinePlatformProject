@@ -48,7 +48,7 @@ export const verifyDoctor = (id) => {
 export const deleteUser = (id) => {
   const token = localStorage.getItem("token");
 
-  return axios.delete(`http://localhost:5000/admin/users/${id}`, {
+  return axios.delete(`${API}/users/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -60,7 +60,7 @@ export const updateUser = (id, data) => {
   const token = localStorage.getItem("token");
 
   return axios.put(
-    `http://localhost:5000/admin/users/${id}`,
+    `${API}/users/${id}`,
     data,
     {
       headers: {
