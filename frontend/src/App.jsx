@@ -11,6 +11,10 @@ import PaymentPage from "./pages/PaymentPage";
 import PaymentStatusPage from "./pages/PaymentStatusPage";
 import AddPaymentMethodPage from "./pages/AddPaymentMethodPage";
 
+// Notification pages
+import NotificationsPage from "./pages/NotificationsPage";
+import NotificationTemplatesPage from "./pages/NotificationTemplatesPage";
+
 // 👇 OPTIONAL (only if you created them)
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -30,6 +34,10 @@ function App() {
           <Route path="/payment/status" element={<PaymentStatusPage />} />
           <Route path="/payment/status/:paymentId" element={<PaymentStatusPage />} />
           <Route path="/payment/add-method" element={<AddPaymentMethodPage />} />
+          
+          {/* Notification routes */}
+          <Route path="/notifications" element={<NotificationsPage />} />
+          <Route path="/notifications/templates" element={<NotificationTemplatesPage />} />
         </Routes>
       </AppShell>
     </Router>

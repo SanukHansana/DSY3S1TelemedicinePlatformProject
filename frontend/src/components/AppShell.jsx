@@ -18,6 +18,8 @@ export default function AppShell({ children }) {
           <Link to="/appointments/new">Create Appointment</Link>
           <Link to="/payment">Make Payment</Link>
           <Link to="/payment/status">Payment Status</Link>
+          <Link to="/notifications">Notifications</Link>
+          <Link to="/notifications/templates">Template Admin</Link>
         </nav>
       </header>
 
