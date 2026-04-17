@@ -23,6 +23,15 @@ import PaymentPage from "./pages/PaymentPage";
 import PaymentStatusPage from "./pages/PaymentStatusPage";
 import AddPaymentMethodPage from "./pages/AddPaymentMethodPage";
 
+// Notification pages
+import NotificationsPage from "./pages/NotificationsPage";
+import NotificationTemplatesPage from "./pages/NotificationTemplatesPage";
+
+// 👇 OPTIONAL (only if you created them)
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import { AuthProvider } from "./context/AuthContext";
+
 function App() {
   return (
     <AuthProvider>
@@ -32,6 +41,19 @@ function App() {
         <ToastContainer position="top-right" autoClose={3000} />
 
         <Routes>
+          <Route path="/" element={<AppointmentPage />} />
+          <Route path="/appointments/new" element={<CreateAppointmentPage />} />
+          <Route path="/consultation/:appointmentId" element={<ConsultationPage />} />
+          
+          {/* Payment routes */}
+          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/payment/status" element={<PaymentStatusPage />} />
+          <Route path="/payment/status/:paymentId" element={<PaymentStatusPage />} />
+          <Route path="/payment/add-method" element={<AddPaymentMethodPage />} />
+          
+          {/* Notification routes */}
+          <Route path="/notifications" element={<NotificationsPage />} />
+          <Route path="/notifications/templates" element={<NotificationTemplatesPage />} />
 
           {/* 🔓 PUBLIC ROUTES */}
           <Route path="/login" element={<Login />} />

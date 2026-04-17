@@ -34,6 +34,14 @@ export default function AppShell({ children }) {
           )}
         </div>
 
+        <nav className="main-nav">
+          <Link to="/">Appointments</Link>
+          <Link to="/appointments/new">Create Appointment</Link>
+          <Link to="/payment">Make Payment</Link>
+          <Link to="/payment/status">Payment Status</Link>
+          <Link to="/notifications">Notifications</Link>
+          <Link to="/notifications/templates">Template Admin</Link>
+        </nav>
         {isHome && (
           <div className="hero-stats">
             <div className="stat-card">
