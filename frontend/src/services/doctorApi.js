@@ -1,6 +1,6 @@
 import { apiRequest } from "./apiClient";
 
-const API = "http://localhost:4002/api/doctors";
+const API = "/api/doctors";
 
 export const getAvailableDoctors = () => apiRequest(API);
 
