@@ -1,8 +1,10 @@
 .register-page {
-  min-height: 100vh;
+  min-height: calc(100vh - 76px);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 2rem 1.25rem;
+  box-sizing: border-box;
 
   background: linear-gradient(180deg, #f9f6f0, #eef3f1);
   font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
